@@ -1,6 +1,8 @@
+from distutils.log import error
 from pickletools import int4
 from rest_framework import serializers
 from .models import apiModel
+from django.http import Http404
 
 class apiSerializer(serializers.ModelSerializer):
     mystring = serializers.SerializerMethodField()
@@ -8,7 +10,11 @@ class apiSerializer(serializers.ModelSerializer):
         alpha = apiModel.string[:4]
         a = (apiModel.string[4:])
         b = a.replace('.', '')
-        c = [int(numeric_string) for numeric_string in b]
+        try:
+            c = [int(numeric_string) for numeric_string in b]
+        except ValueError:
+            raise Http404
+            
         A = []
         while c:
             max = 0
